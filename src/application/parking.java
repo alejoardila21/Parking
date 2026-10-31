@@ -42,21 +42,15 @@ public class parking {
     static long recaudoMotos = 0;
 
     public static void main(String[] args) {
-
+        registroEntrada();
     }
+
 
     // Metodo para registrar la entrada de un vehiculo
     static void registroEntrada() {
 
-        int celda = -1;
-
-        // Buscar la primera celda libre
-        for (int i = 0; i < CAPACIDAD_TOTAL; i++) {
-            if (tiposVehiculos[i] == null) {
-                celda = i;
-                break;
-            }
-        }
+        // Buscar una celda disponible
+        int celda = celdaDisponible();
 
         // Comprobar si el parqueadero esta lleno
         if (celda == -1) {
@@ -97,6 +91,20 @@ public class parking {
 
         System.out.println("Vehiculo registrado correctamente.");
         System.out.println("Celda asignada: " + (celda + 1));
+    }
+
+
+    // Metodo para buscar una celda disponible
+    static int celdaDisponible() {
+
+        for (int i = 0; i < CAPACIDAD_TOTAL; i++) {
+
+            if (tiposVehiculos[i] == null) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
 }
