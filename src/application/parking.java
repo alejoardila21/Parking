@@ -44,4 +44,59 @@ public class parking {
     public static void main(String[] args) {
 
     }
+
+    // Metodo para registrar la entrada de un vehiculo
+    static void registroEntrada() {
+
+        int celda = -1;
+
+        // Buscar la primera celda libre
+        for (int i = 0; i < CAPACIDAD_TOTAL; i++) {
+            if (tiposVehiculos[i] == null) {
+                celda = i;
+                break;
+            }
+        }
+
+        // Comprobar si el parqueadero esta lleno
+        if (celda == -1) {
+            System.out.println("El parqueadero esta lleno.");
+            return;
+        }
+
+        // Solicitar el tipo de vehiculo
+        String tipo;
+
+        do {
+            System.out.println("1. Carro");
+            System.out.println("2. Moto");
+            System.out.print("Seleccione el tipo de vehiculo: ");
+
+            tipo = SCANNER.nextLine().trim();
+
+            if (!tipo.equals("1") && !tipo.equals("2")) {
+                System.out.println("Opcion invalida.");
+            }
+
+        } while (!tipo.equals("1") && !tipo.equals("2"));
+
+        // Solicitar la fecha y hora de ingreso
+        System.out.print("Fecha y hora de ingreso (yyyy-MM-dd HH:mm): ");
+        String fechaTexto = SCANNER.nextLine().trim();
+
+        LocalDateTime fechaIngreso =
+                LocalDateTime.parse(fechaTexto, FORMATO_FECHA_HORA);
+
+        // Guardar los datos en los arreglos
+        tiposVehiculos[celda] = tipo.equals("1") ? "Carro" : "Moto";
+        fechasIngreso[celda] = fechaIngreso;
+
+        // Actualizar la ocupacion
+        celdasOcupadas++;
+        celdasLibres--;
+
+        System.out.println("Vehiculo registrado correctamente.");
+        System.out.println("Celda asignada: " + (celda + 1));
+    }
+
 }
