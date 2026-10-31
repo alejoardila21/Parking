@@ -42,7 +42,10 @@ public class parking {
     static long recaudoMotos = 0;
 
     public static void main(String[] args) {
+
         registroEntrada();
+        registroSalida();
+
         SCANNER.close();
     }
 
@@ -207,6 +210,64 @@ public class parking {
 
             System.out.println("Dato invalido. Intente nuevamente.");
         }
+    }
+
+
+    // Metodo para registrar la salida de un vehiculo
+    static void registroSalida() {
+
+        // Comprobar si existen vehiculos registrados
+        if (celdasOcupadas == 0) {
+            System.out.println("No hay vehiculos en el parqueadero.");
+            return;
+        }
+
+        // Solicitar la celda del vehiculo
+        int numeroCelda = validarDato(
+                "Ingrese el numero de celda (1-10): ",
+                1, CAPACIDAD_TOTAL
+        );
+
+        // Convertir numero de celda a posicion del arreglo
+        int celda = numeroCelda - 1;
+
+        // Comprobar si la celda esta ocupada
+        if (tiposVehiculos[celda] == null) {
+            System.out.println("La celda seleccionada esta libre.");
+            return;
+        }
+
+        // Consultar los datos del vehiculo
+        String tipo = tiposVehiculos[celda];
+        LocalDateTime fechaIngreso = fechasIngreso[celda];
+
+        // Solicitar y validar la fecha de salida
+        LocalDateTime fechaSalida;
+
+        do {
+            fechaSalida = leerFechaHora(
+                    "Fecha y hora de salida (yyyy-MM-dd HH:mm): "
+            );
+
+            if (fechaSalida.isBefore(fechaIngreso)) {
+                System.out.println(
+                        "La salida no puede ser anterior al ingreso."
+                );
+            }
+
+        } while (fechaSalida.isBefore(fechaIngreso));
+
+        // Mostrar los datos de la salida
+        System.out.println("Salida validada correctamente.");
+        System.out.println("Celda: " + numeroCelda);
+        System.out.println("Vehiculo: " + tipo);
+        System.out.println("Ingreso: " +
+                fechaIngreso.format(FORMATO_FECHA_HORA));
+        System.out.println("Salida: " +
+                fechaSalida.format(FORMATO_FECHA_HORA));
+
+        // La liquidacion y liberacion se integraran
+        // en el siguiente commit.
     }
 
 }
