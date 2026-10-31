@@ -3,6 +3,8 @@ package application;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 
 public class parking {
 
@@ -45,7 +47,6 @@ public class parking {
 
         registroEntrada();
         registroSalida();
-
         SCANNER.close();
     }
 
@@ -266,8 +267,83 @@ public class parking {
         System.out.println("Salida: " +
                 fechaSalida.format(FORMATO_FECHA_HORA));
 
-        // La liquidacion y liberacion se integraran
-        // en el siguiente commit.
+
+        // Calcular el valor a pagar
+        long total = liquidacion(
+                tipo, fechaIngreso, fechaSalida
+        );
+
+        // Actualizar el recaudo segun el vehiculo
+        if (tipo.equals("Carro")) {
+            recaudoCarros += total;
+        } else {
+            recaudoMotos += total;
+        }
+
+        // Liberar la celda
+        tiposVehiculos[celda] = null;
+        fechasIngreso[celda] = null;
+
+        // Actualizar la ocupacion
+        celdasOcupadas--;
+        celdasLibres++;
+
+        System.out.println("Pago registrado correctamente.");
+        System.out.println("Celda liberada: " + numeroCelda);
+
+    }
+
+
+    // Metodo para calcular el valor del parqueo
+    static long liquidacion(
+            String tipo,
+            LocalDateTime fechaIngreso,
+            LocalDateTime fechaSalida) {
+
+        // Calcular los dias completos de 24 horas
+        long dias = ChronoUnit.DAYS.between(
+                fechaIngreso, fechaSalida
+        );
+
+        // Calcular los minutos restantes
+        long minutos = Duration.between(
+                fechaIngreso.plusDays(dias),
+                fechaSalida
+        ).toMinutes();
+
+        // Redondear las horas restantes hacia arriba
+        long horas = (minutos + 59) / 60;
+
+        // Seleccionar las tarifas segun el vehiculo
+        int tarifaHora;
+        int tarifaDia;
+
+        if (tipo.equals("Carro")) {
+            tarifaHora = TARIFA_HORA_CARRO;
+            tarifaDia = TARIFA_DIA_CARRO;
+        } else {
+            tarifaHora = TARIFA_HORA_MOTO;
+            tarifaDia = TARIFA_DIA_MOTO;
+        }
+
+        // Si quedan 8 horas o mas, cobrar otro dia
+        if (horas >= UMBRAL_HORAS_DIA) {
+            dias++;
+            horas = 0;
+        }
+
+        // Calcular el total
+        long total = dias * tarifaDia + horas * tarifaHora;
+
+        // Mostrar el detalle de la liquidacion
+        System.out.println("----- LIQUIDACION -----");
+        System.out.println("Dias cobrados: " + dias);
+        System.out.println("Horas cobradas: " + horas);
+        System.out.println("Tarifa diaria: $" + tarifaDia);
+        System.out.println("Tarifa por hora: $" + tarifaHora);
+        System.out.println("Total a pagar: $" + total);
+
+        return total;
     }
 
 }
