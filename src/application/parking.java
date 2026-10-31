@@ -43,12 +43,53 @@ public class parking {
     static long recaudoCarros = 0;
     static long recaudoMotos = 0;
 
+
+
     public static void main(String[] args) {
 
-        registroEntrada();
-        registroSalida();
+        int opcion;
+
+        do {
+            System.out.println("\n===== SISTEMA DE PARQUEADERO =====");
+            System.out.println("1. Registrar entrada");
+            System.out.println("2. Registrar salida");
+            System.out.println("3. Reporte de ocupacion");
+            System.out.println("4. Reporte financiero");
+            System.out.println("5. Salir");
+
+            opcion = validarDato(
+                    "Seleccione una opcion: ", 1, 5
+            );
+
+            switch (opcion) {
+
+                case 1:
+                    registroEntrada();
+                    break;
+
+                case 2:
+                    registroSalida();
+                    break;
+
+                case 3:
+                    reporteOcupacion();
+                    break;
+
+                case 4:
+                    reporteFinanciero();
+                    break;
+
+                case 5:
+                    System.out.println("Programa finalizado.");
+                    break;
+            }
+
+        } while (opcion != 5);
+
         SCANNER.close();
     }
+
+
 
 
     // Metodo para registrar la entrada de un vehiculo
@@ -336,7 +377,7 @@ public class parking {
         long total = dias * tarifaDia + horas * tarifaHora;
 
         // Mostrar el detalle de la liquidacion
-        System.out.println("----- LIQUIDACION -----");
+        System.out.println(" LIQUIDACION ");
         System.out.println("Dias cobrados: " + dias);
         System.out.println("Horas cobradas: " + horas);
         System.out.println("Tarifa diaria: $" + tarifaDia);
@@ -345,5 +386,29 @@ public class parking {
 
         return total;
     }
+
+
+    // Metodo para mostrar la ocupacion del parqueadero
+    static void reporteOcupacion() {
+
+        System.out.println(" REPORTE DE OCUPACION ");
+        System.out.println("Capacidad total: " + CAPACIDAD_TOTAL);
+        System.out.println("Celdas ocupadas: " + celdasOcupadas);
+        System.out.println("Celdas disponibles: " + celdasLibres);
+    }
+
+
+    // Metodo para mostrar el recaudo del parqueadero
+    static void reporteFinanciero() {
+
+        // Sumar el recaudo de carros y motos
+        long recaudoTotal = recaudoCarros + recaudoMotos;
+
+        System.out.println(" REPORTE FINANCIERO ");
+        System.out.println("Recaudo de carros: $" + recaudoCarros);
+        System.out.println("Recaudo de motos: $" + recaudoMotos);
+        System.out.println("Recaudo total: $" + recaudoTotal);
+    }
+
 
 }
